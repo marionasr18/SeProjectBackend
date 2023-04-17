@@ -53,13 +53,11 @@ login:(req,res)=>{
         })
            }
            const result = compareSync(body.password,results.passwrd)
-           console.log(result,'result')
            if(result){
             results.password=undefined;
             const jsontoken = sign({result:results},'qwe124',{
                 expiresIn:'1h'
             })
-          
         return res.json({
             success:1,
 message:'Login successfully',
