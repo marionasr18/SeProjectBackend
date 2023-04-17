@@ -15,7 +15,7 @@ app.use('/api/users',userRouter)
           message:'This app is working'
       })
   })
-app.listen(3000,()=>{
+app.listen(3001,()=>{
     console.log('Server up and running')
 });
 
