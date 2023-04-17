@@ -22,6 +22,8 @@ createUser:(req,res)=>{
 getUserById:(req,res)=>{
     const id = req.params.id;
     getUserById(id,(err,results)=>{
+    console.log(results)
+
         if(err){
             console.log(err);
             return res.status(500).json({
