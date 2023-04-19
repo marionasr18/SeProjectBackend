@@ -41,11 +41,13 @@ getUserById:(req,res)=>{
 },
 login:(req,res)=>{
     const body = req.body;
-    console.log(body)
+    console.log(body,'body')
     getUserByUserEmail(body.username,(err,results)=>{
         if(err){
-            console.log(err);
-           }
+            return res.json({
+                success:0,
+                message:'Error'
+            })           }
            if(!results){
             return res.json({
             success:0,

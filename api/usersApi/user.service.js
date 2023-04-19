@@ -40,8 +40,10 @@ pool.query('Select * from tbl_users',[],(error,results,field)=>{
         )
     },
     getUserByUserEmail :(username,callback)=>{
+        console.log(username)
         pool.query('select * from tbl_users where username =?',[username],
         (error,results,fields)=>{
+            console.log('result',results)
             if(error){
               return  callback(error);
             }
