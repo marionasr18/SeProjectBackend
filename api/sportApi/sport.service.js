@@ -3,7 +3,7 @@ const pool = require ('../../config/databse')
 module.exports={
     create:(data,callback)=>{
         pool.query(
-            'insert into tbl_sport(sport_name,description ) values(?,?)',
+            'insert into tbl_sport(sport_name, description) values(?,?)',
             [
                 data.sport_name ,
                 data.description
@@ -48,5 +48,16 @@ module.exports={
             return callback(null,results[0]);
         }
         )
+    },
+    deleteSportById :(Id,callback)=>{
+        pool.query('DELETE FROM tbl_sport WHERE sport_id=?',[Id],
+        (error,results,fields)=>{
+            if(error){
+                return  callback(error);
+            }
+            return callback(null,results[0]);
+        })
     }
+    
+    
 }

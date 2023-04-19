@@ -3,7 +3,7 @@ const pool = require ('../../config/databse')
 module.exports={
     create:(data,callback)=>{
         pool.query(
-            'insert into tbl_users(user_id ,username ,email,dob ,address ,passwrd,gender,phoneNumber   ) values(?,?,?,?,?,?,?)',
+            'insert into tbl_users(username ,email,dob ,address ,password,gender,phoneNumber   ) values(?,?,?,?,?,?,?)',
             [
                 data.username ,
                 data.email,
@@ -50,5 +50,28 @@ pool.query('Select * from tbl_users',[],(error,results,field)=>{
             return callback(null,results[0]);
         }
         )
+    }, 
+    deleteUserById :(Id,callback)=>{
+        pool.query('DELETE FROM tbl_users WHERE user_id=?',[Id],
+        (error,results,fields)=>{
+            if(error){
+                return  callback(error);
+            }
+            return callback(null,results[0]);
+        })
+    },
+    updateUserById: (id, name, email, password, callback) => {
+        pool.query(
+            'UPDATE tbl_users SET username = ?, email = ?, password = ? WHERE user_id = ?',
+            [name, email, password, id],
+            (error, results, fields) => {
+                if (error) {
+                    return callback(error);
+                }
+                return callback(null, results);
+            }
+        );
     }
+    
+    
 }

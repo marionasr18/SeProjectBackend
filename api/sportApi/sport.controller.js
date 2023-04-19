@@ -1,4 +1,4 @@
-const {create,getSportById,getSport, getSportByName} = require('./sport.service');
+const {create,getSportById,getSport, getSportByName,deleteSportById} = require('./sport.service');
 // const {sign}= require('jsonwebtoken');
 
 module.exports={
@@ -73,5 +73,22 @@ getSport:(req,res)=>{
         })
     })
 },
+deleteSportById:(req,res)=>{
+    const id = req.params.id;
+    deleteSportById(id,(err,results)=>{
+        if(err){
+            console.log(err);
+            return res.status(500).json({
+                success:0,
+                message:'Record not found'
+            })
+        }
+        return res.status(200).json({
+            success:1,
+            message:'Sport deleted successfully'
+        })
+    })
+}
+
 
 }
