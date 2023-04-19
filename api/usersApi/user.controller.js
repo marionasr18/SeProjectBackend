@@ -1,10 +1,10 @@
-const {create,getUserById,getUsers,getUserByUserEmail} = require('./user.service');
+const {create,getUserById,getUsers,getUserByUserEmail,updateUserById} = require('./user.service');
 const {genSaltSync,hashSync,compareSync }= require ('bcrypt')
 const {sign}= require('jsonwebtoken');
 
 module.exports={
 createUser:(req,res)=>{
-    const body = req.body;
+    const body = req.body;  
      const salt = genSaltSync(10);
      body.password = hashSync(body.password,salt);
     create(body,(err,results)=>{
@@ -43,6 +43,7 @@ login:(req,res)=>{
     const body = req.body;
     console.log(body,'body')
     getUserByUserEmail(body.username,(err,results)=>{
+        console.log(results,'results')
         if(err){
             return res.json({
                 success:0,
@@ -54,7 +55,7 @@ login:(req,res)=>{
             message:'Invalid Email or Password'
         })
            }
-           const result = compareSync(body.password,results.passwrd)
+           const result = body.password===results.password
            if(result){
             results.password=undefined;
             const jsontoken = sign({result:results},'qwe124',{
@@ -89,5 +90,40 @@ getUsers:(req,res)=>{
         })
     })
 },
+deleteUserById:(req,res)=>{
+    const id = req.params.id;
+    deleteUserById(id,(err,results)=>{
+        if(err){
+            console.log(err);
+            return res.status(500).json({
+                success:0,
+                message:'Record not found'
+            })
+        }
+        return res.status(200).json({
+            success:1,
+            message:'User deleted successfully'
+        })
+    })
+}, updateUserById: (req, res) => {
+    const id = req.params.id;
+    const { name, email, password } = req.body;
+
+    updateUserById(id, name, email, password, (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+                success: 0,
+                message: 'Failed to update user'
+            });
+        }
+        return res.status(200).json({
+            success: 1,
+            message: 'User updated successfully'
+        });
+    });
+}
+
+
 
 }
