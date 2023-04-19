@@ -43,6 +43,7 @@ login:(req,res)=>{
     const body = req.body;
     console.log(body)
     getUserByUserEmail(body.username,(err,results)=>{
+        console.log(results,'results')
         if(err){
             console.log(err);
            }
@@ -52,7 +53,7 @@ login:(req,res)=>{
             message:'Invalid Email or Password'
         })
            }
-           const result = compareSync(body.password,results.passwrd)
+           const result = body.password===results.password
            if(result){
             results.password=undefined;
             const jsontoken = sign({result:results},'qwe124',{

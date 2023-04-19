@@ -3,15 +3,10 @@ const pool = require ('../../config/databse')
 module.exports={
     create:(data,callback)=>{
         pool.query(
-            'insert into tbl_users(user_id ,username ,email,dob ,address ,passwrd,gender,phoneNumber   ) values(?,?,?,?,?,?,?)',
+            'insert into tbl_sport(sport_name,description ) values(?,?)',
             [
-                data.username ,
-                data.email,
-                data.dob ,
-                data.address ,
-                data.password,
-                data.gender ,
-                data.phoneNumber
+                data.sport_name ,
+                data.description
             ],
             (error,results,fields)=>{
                 if(error){
@@ -21,16 +16,19 @@ module.exports={
             }
         )
     },
-    getUsers: callback=>{
-pool.query('Select * from tbl_users',[],(error,results,field)=>{
+    
+    getSport: callback=>{
+    pool.query('Select * from tbl_sport',[],(error,results,field)=>{
     if(error){
        return callback(error);
     }
     return callback(null,results);
 })
     },
-    getUserById :(Id,callback)=>{
-        pool.query('select * from tbl_users where user_id=?',[Id],
+
+
+    getSportById :(Id,callback)=>{
+        pool.query('select * from tbl_sport where sport_id=?',[Id],
         (error,results,fields)=>{
             if(error){
               return  callback(error);
@@ -39,9 +37,9 @@ pool.query('Select * from tbl_users',[],(error,results,field)=>{
         }
         )
     },
-    getUserByUserEmail :(username,callback)=>{
-        console.log(username)
-        pool.query('select * from tbl_users where username =?',[username],
+    getSportByName :(Name,callback)=>{
+      
+        pool.query('select * from tbl_sport where sport_name =?',[Name],
         (error,results,fields)=>{
             console.log(results)
             if(error){
