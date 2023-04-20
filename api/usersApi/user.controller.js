@@ -105,11 +105,12 @@ deleteUserById:(req,res)=>{
             message:'User deleted successfully'
         })
     })
-}, updateUserById: (req, res) => {
+}, 
+updateUserById: (req, res) => {
     const id = req.params.id;
-    const { name, email, password } = req.body;
+    const { username, email, password } = req.body;
 
-    updateUserById(id, name, email, password, (err, results) => {
+    updateUserById(id, username, email, password, (err, results) => {
         if (err) {
             console.log(err);
             return res.status(500).json({

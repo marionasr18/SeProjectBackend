@@ -60,14 +60,15 @@ pool.query('Select * from tbl_users',[],(error,results,field)=>{
             return callback(null,results[0]);
         })
     },
-    updateUserById: (id, name, email, password, callback) => {
+    updateUserById: (id, username, email, password, callback) => {
         pool.query(
             'UPDATE tbl_users SET username = ?, email = ?, password = ? WHERE user_id = ?',
-            [name, email, password, id],
+            [username, email, password, id],
             (error, results, fields) => {
                 if (error) {
                     return callback(error);
                 }
+                console.log(username,password,email);
                 return callback(null, results);
             }
         );
