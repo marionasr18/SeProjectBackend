@@ -3,10 +3,13 @@ const pool = require ('../../config/databse')
 module.exports={
     create:(data,callback)=>{
         pool.query(
-            'insert into tbl_field(field_name, venue_id) values(?,?)',
+            'insert into tbl_field(field_name, field_description, address, phone_number, sport_id) values(?,?,?,?,?)',
             [
                 data.field_name ,
-                data.venue_id
+                data.field_description,
+                data.address,
+                data.phone_number,
+                data.sport_id,
             ],
             (error,results,fields)=>{
                 if(error){
