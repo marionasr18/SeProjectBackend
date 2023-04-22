@@ -12,5 +12,3 @@ router.delete('/deleteSport/:id',checkToken,deleteSportById);
 
 module.exports = router;
 
-//delete
-//update
