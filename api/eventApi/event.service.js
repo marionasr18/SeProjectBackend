@@ -40,24 +40,101 @@ return callback(err)
             }
         )
     },
+    requestToJoin:(data,callback)=>{
+        let token = data.user_id; // Your JWE-encrypted JWT token
+// token = token.slice(7)
+const key = 'qwe124'; // Your JWE key
+let userId=''
+jwt.verify(token, key, (err, decodedToken) => {
+  if (err) {
+return callback(err)  
+} else {
+    console.log(decodedToken.result,'dedecodedToken')
+    const res =  decodedToken.result
+     userId =res.user_id; // Access the user ID from the decoded token
+    // Use the user ID as needed
+  }
+});
+        pool.query(
+            'INSERT INTO tbl_event_participants (event_id, user_id) VALUES (?,?)',
+            [ 
+                data.event_id,
+                userId,
+            ],
+            (error,results,fields)=>{
+                if(error){
+                    callback(error)
+                }
+                return callback(null,results)
+            }
+        )
+    },
+    acceptOrDeclineRequest:(data,callback)=>{
+        let token = data.user_id; // Your JWE-encrypted JWT token
+// token = token.slice(7)
+const key = 'qwe124'; // Your JWE key
+let userId=''
+jwt.verify(token, key, (err, decodedToken) => {
+  if (err) {
+return callback(err)  
+} else {
+    console.log(decodedToken.result,'dedecodedToken')
+    const res =  decodedToken.result
+     userId =res.user_id; // Access the user ID from the decoded token
+    // Use the user ID as needed
+  }
+});
+        pool.query(
+            'UPDATE tbl_event_participants SET status = ? WHERE event_id = ? AND user_id = ?',
+  [data.status, data.eventId, userId],
+            (error,results,fields)=>{
+                if(error){
+                    callback(error)
+                }
+                return callback(null,results)
+            }
+        )
+    },
+    getAllCreatedEvents:(id,callback)=>{
+        let token = id; // Your JWE-encrypted JWT token
+// token = token.slice(7)
+const key = 'qwe124'; // Your JWE key
+let userId=''
+jwt.verify(token, key, (err, decodedToken) => {
+  if (err) {
+return callback(err)  
+} else {
+    console.log(decodedToken.result,'dedecodedToken')
+    const res =  decodedToken.result
+     userId =res.user_id; // Access the user ID from the decoded token
+    // Use the user ID as needed
+  }
+});
+        pool.query(
+            'SELECT e.event_id, e.event_name, e.event_date, e.event_location, e.event_description, s.sport_name, f.field_name FROM tbl_events e JOIN tbl_field f ON e.field_id = f.field_id JOIN tbl_sport s ON e.sport_id = s.sport_id WHERE e.user_id = ? ORDER BY e.event_date ASC',
+  [userId],
+            (error,results,fields)=>{
+                if(error){
+                    callback(error)
+                }
+                return callback(null,results)
+            }
+        )
+    },
+    getRequestByEventId:(Id,callback)=>{
     
-//     getEventToJoin: callback=>{
-//         pool.query(`SELECT e.event_id, e.event_name, e.event_date, e.event_location, e.event_description, s.sport_name, f.field_name
-//         FROM tbl_events e
-//         JOIN tbl_field f ON e.field_id = f.field_id
-//         JOIN tbl_sport s ON e.sport_id = s.sport_id
-//         WHERE e.event_date > NOW() AND e.user_id <> ?
-//         AND s.sport_id NOT IN (
-//           SELECT sport_id FROM tbl_user_sports WHERE user_id = ?
-//         )
-//         ORDER BY e.event_date ASC;`, [userId, userId],(error,results,field)=>{
-//     if(error){
-//        return callback(error);
-//     }
-//     return callback(null,results);
-// })
-//     },
-
+        pool.query(
+            'SELECT u.username, u.email, u.dob, u.address, u.gender, u.phoneNumber, ep.status FROM tbl_event_participants ep JOIN tbl_users u ON ep.user_id = u.user_id WHERE ep.event_id =?;',
+  [Id],
+            (error,results,fields)=>{
+                if(error){
+                    callback(error)
+                }
+                return callback(null,results)
+            }
+        )
+    },
+    
 
     getEventToJoinnById :(Id,callback)=>{
         let token =Id; // Your JWE-encrypted JWT token
@@ -74,20 +151,18 @@ return callback(err)
             // Use the user ID as needed
           }
         });
-        pool.query(`SELECT e.event_id, e.event_name, e.event_date, e.event_location, e.event_description, s.sport_name, f.field_name
+        pool.query(`SELECT e.event_id, e.event_name, e.event_date, e.event_location, e.event_description, s.sport_name, f.field_name, u.username as created_by, e.event_description
         FROM tbl_events e
         JOIN tbl_field f ON e.field_id = f.field_id
         JOIN tbl_sport s ON e.sport_id = s.sport_id
+        JOIN tbl_users u ON e.user_id = u.user_id
         WHERE e.event_date > NOW() AND e.user_id <> ?
-        AND s.sport_id NOT IN (
-          SELECT sport_id FROM tbl_user_sports WHERE user_id = ?
-        )
         ORDER BY e.event_date ASC;`, [userId, userId],
         (error,results,fields)=>{
             if(error){
               return  callback(error);
             }
-            return callback(null,results[0]);
+            return callback(null,results);
         }
         )
     },
