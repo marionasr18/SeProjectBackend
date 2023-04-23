@@ -1,9 +1,11 @@
 const pool = require ('../../config/databse')
+const jwt = require('jsonwebtoken');
+
 
 module.exports={
     create:(data,callback)=>{
         pool.query(
-            'insert into tbl_users(username ,email,dob ,address ,password,gender,phoneNumber   ) values(?,?,?,?,?,?,?)',
+            'insert into tbl_users(username ,email,dob ,address ,passwrd,gender,phoneNumber   ) values(?,?,?,?,?,?,?)',
             [
                 data.username ,
                 data.email,
@@ -23,6 +25,7 @@ module.exports={
     },
     getUsers: callback=>{
 pool.query('Select * from tbl_users',[],(error,results,field)=>{
+    console.log(results,'heyyyy')
     if(error){
        return callback(error);
     }
@@ -30,7 +33,21 @@ pool.query('Select * from tbl_users',[],(error,results,field)=>{
 })
     },
     getUserById :(Id,callback)=>{
-        pool.query('select * from tbl_users where user_id=?',[Id],
+
+let token = Id; // Your JWE-encrypted JWT token
+token = token.slice(7)
+const key = 'qwe124'; // Your JWE key
+let userId=''
+jwt.verify(token, key, (err, decodedToken) => {
+  if (err) {
+return callback(err)  
+} else {
+    console.log(decodedToken)
+    const userId = decodedToken.user_id; // Access the user ID from the decoded token
+    // Use the user ID as needed
+  }
+});
+        pool.query('select * from tbl_users where user_id=?',[userId],
         (error,results,fields)=>{
             if(error){
               return  callback(error);

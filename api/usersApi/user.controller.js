@@ -6,13 +6,13 @@ module.exports={
 createUser:(req,res)=>{
     const body = req.body;  
      const salt = genSaltSync(10);
-     body.passwrd = hashSync(body.password,salt);
+     body.password = hashSync(body.password,salt);
     create(body,(err,results)=>{
         if(err){
             console.log(err);
             return res.status(500).json({
             success:0,
-            message:'Error connection'
+            message:err
         })
         }
         return res.status(200).json({
@@ -23,8 +23,9 @@ createUser:(req,res)=>{
 },
 getUserById:(req,res)=>{
     const id = req.params.id;
+    console.log(id)
     getUserById(id,(err,results)=>{
-    console.log(results)
+    console.log(results,'hereeeeeee')
 
         if(err){
             console.log(err);
@@ -84,6 +85,7 @@ getUsers:(req,res)=>{
             message:err
         })
         }
+        console.log(results)
         return res.status(200).json({
             success:1,
             data:results

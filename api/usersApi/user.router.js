@@ -2,7 +2,7 @@ const {createUser,getUsers,getUserById,login,deleteUserById,updateUserById}= req
 const router = require('express').Router();
 const {checkToken} =require('../../auth/token_validation') 
 
-router.post('/createUser',checkToken,createUser)
+router.post('/createUser',createUser)
 router.get('/getAllUser',checkToken,getUsers)
 router.get('/:id',checkToken,getUserById)
 router.post('/login',login)
