@@ -1,5 +1,5 @@
 // const {sign}= require('jsonwebtoken');
-const {sendRequest, deleteAcceptedRequest,deletePendingRequest,getPendingRequest, getRequest} = require('./connection.service');
+const {sendRequest, deleteAcceptedRequest,deletePendingRequest,getPendingRequest, getRequest,acceptFriendRequest,rejectFriendRequest} = require('./connection.service');
 
 module.exports = {
     sendFriendRequest:(req,res)=>{
@@ -29,7 +29,7 @@ module.exports = {
                     console.log(err);
                     return res.status(500).json({
                         success:0,
-                        message:'Record top g found'
+                        message:'Record not found'
                     })
                 }
                 return res.status(200).json({
@@ -60,6 +60,7 @@ module.exports = {
             const id = req.params.id;
             getPendingRequest(id,(err,results)=>{
             console.log(results)
+           
         
                 if(err){
                     console.log(err);
@@ -67,7 +68,9 @@ module.exports = {
                         success:0,
                     message:'Record not found'
                 })
+                
                 }
+                
                 return res.status(200).json({
                     success:1,
                     data:results
@@ -80,17 +83,53 @@ module.exports = {
                     if(err){
                         console.log(err);
                         return res.json({
-                            success:results,
+                        success:results,
                         message:err
                     })
                     }
                    
                     return res.status(200).json({
-                        success:1,      
+                        success:1, 
                         data:results
                     })
                 })
             },
+            acceptFriendRequest: (req, res) => {
+                const connectionId = req.params.id;
+                
+            
+                acceptFriendRequest(connectionId, (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({
+                            success: 0,
+                            message: 'Failed to update request'
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: 'Request updated successfully'
+                    });
+                });
+            },
+            rejectFriendRequest: (req, res) => {
+                const connectionId = req.params.id;
+                
+            
+                rejectFriendRequest(connectionId, (err, results) => {
+                    if (err) {
+                        console.log(err);
+                        return res.status(500).json({
+                            success: 0,
+                            message: 'Failed to update request'
+                        });
+                    }
+                    return res.status(200).json({
+                        success: 1,
+                        message: 'Request updated successfully'
+                    });
+                });
+            }
         }
             
 
@@ -113,4 +152,4 @@ module.exports = {
         //     })
     
     
-      
+       

@@ -1,10 +1,11 @@
 const pool =  require ('../../config/databse')
+const jwt = require('jsonwebtoken');
 
 module.exports={
   
    sendRequest:(data,callback)=>{
         pool.query(
-            'INSERT INTO tbl_connections (sender_id, receiver_id) VALUES (?, ?)'
+            'INSERT INTO tbl_connections (sender_id, receiver_id) VALUES (?, ?)',
             [
                 data.sender_id ,
                 data.receiver_id
@@ -31,7 +32,7 @@ deletePendingRequest: (requestId, callback) => {
       }
   
       if (results.length === 0) {
-        return callback('Record top g found');
+        return callback('Record found empty');
       }
   
       const status = results[0].status;
@@ -70,7 +71,7 @@ deleteAcceptedRequest: (requestId, callback) => {
       }
   
       if (results.length === 0) {
-        return callback('Record omar god found');
+        return callback('Record not found');
       }
   
       const status = results[0].status;
@@ -98,20 +99,104 @@ getRequest: callback=>{
 })
     },
 
-getPendingRequest :(Id,callback)=>{
-    pool.query(`
-    SELECT tbl_users.username, tbl_users.email
-    FROM tbl_users INNER JOIN tbl_connections ON tbl_users.user_id = tbl_connections.sender_id
-    WHERE tbl_connections.receiver_id = ? AND tbl_connections.status = 'pending';
-  `),[Id],
-    (error,results,fields)=>{
-        if(error){
-          return  callback(error);
-        }
-        return callback(null,results[0]);
-    }
+
+getPendingRequest: (Id, callback) => {
+  // let token = Id; // Your JWE-encrypted JWT token
+  // // token = token.slice(7)
+  // const key = 'qwe124'; // Your JWE key
+  // let userId = '';
+  // jwt.verify(token, key, (err, decodedToken) => {
+  //   if (err) {
+  //     return callback(err);
+  //   } else {
+  //     console.log(decodedToken.result, 'decodedToken');
+  //     const res = decodedToken.result;
+  //     userId = res.user_id; // Access the user ID from the decoded token
+  //     // Use the user ID as needed
+  //   }
+  // });
+  pool.query(
+    `
+    SELECT u.username, u.email
+    FROM tbl_users u JOIN tbl_connections c ON u.user_id = c.sender_id
+    WHERE c.status = 'pending' AND c.receiver_id = ?;
+  `,
+    [Id],
+    (error, results, fields) => {
+      console.log(results)
+      if (results.length === 0) {
+        return callback('No pending requests');
+      }
     
+      if (error) {
+        return callback(error);
+      }
+      return callback(null, results);
+    }
+  );
 },
+acceptFriendRequest: (connectionId, callback) => {
+  const checkStatusQuery = 'SELECT status FROM tbl_connections WHERE connection_id = ? and status="pending"';
+  pool.query(checkStatusQuery, [connectionId], (error, results, fields) => {
+    if (error) {
+      return callback(error);
+    }
+
+    if (results.length === 0) {
+      return callback('Record not found');
+    }
+
+    const status = results[0].status;
+
+    if (status !== 'accepted') {
+      return callback(`Cannot delete connection with status "${status}"`);
+    }
+  pool.query(
+    'UPDATE tbl_connections SET status = "accepted" WHERE connection_id = ? AND status = "pending"',
+
+      [connectionId],
+      (error, results, fields) => {
+          if (error) {
+              return callback(error);
+          }
+          
+          return callback(null, results);
+      }
+  )});
+},
+rejectFriendRequest: (connectionId, callback) => {
+  const checkStatusQuery = 'SELECT status FROM tbl_connections WHERE connection_id = ? and status="pending"';
+  pool.query(checkStatusQuery, [connectionId], (error, results, fields) => {
+    if (error) {
+      return callback(error);
+    }
+
+    if (results.length === 0) {
+      return callback('Record not found');
+    }
+
+    const status = results[0].status;
+
+    if (status !== 'accepted') {
+      return callback(`Cannot delete connection with status "${status}"`);
+    }
+
+  pool.query(
+    'UPDATE tbl_connections SET status = "rejected" WHERE connection_id = ? AND status = "pending"',
+
+      [connectionId],
+      (error, results, fields) => {
+          if (error) {
+              return callback(error);
+          }
+          
+          
+          return callback(null, results);
+      }
+  )});
+}
+
+  
 
 }
 

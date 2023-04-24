@@ -89,7 +89,33 @@ return callback(err)
                 return callback(null, results);
             }
         );
-    }
+    },
+    updateUserProfileById: (data, callback) => {
+        let token = data.user_id; // Your JWE-encrypted JWT token
+        // token = token.slice(7)
+        const key = 'qwe124'; // Your JWE key
+        let userId=''
+        jwt.verify(token, key, (err, decodedToken) => {
+          if (err) {
+        return callback(err)  
+        } else {
+            console.log(decodedToken.result,'dedecodedToken')
+            const res =  decodedToken.result
+             userId =res.user_id; // Access the user ID from the decoded token
+            // Use the user ID as needed
+          }
+        pool.query(
+            'UPDATE tbl_users SET profile_picture = ? WHERE user_id = ?',
+            [data.profile_picture, userId],
+            (error, results, fields) => {
+                if (error) {
+                    return callback(error);
+                }
+                console.log(id);
+                return callback(null, results);
+            }
+        );
+    })}
     
     
 }

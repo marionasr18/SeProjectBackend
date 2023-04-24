@@ -1,4 +1,4 @@
-const {create,getUserById,getUsers,getUserByUserEmail,updateUserById} = require('./user.service');
+const {create,getUserById,getUsers,getUserByUserEmail,updateUserById,updateUserProfileById} = require('./user.service');
 const {genSaltSync,hashSync,compareSync }= require ('bcrypt')
 const {sign}= require('jsonwebtoken');
 
@@ -127,7 +127,25 @@ updateUserById: (req, res) => {
             message: 'User updated successfully'
         });
     });
-}
+}, 
+updateUserProfileById:(req, res) => {
+    const id = req.params.id;
+    const { picture } = req.body;
+
+    updateUserById(id, picture, (err, results) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({
+                success: 0,
+                message: 'Failed to update user'
+            });
+        }
+        return res.status(200).json({
+            success: 1,
+            message: 'User updated successfully'
+        });
+    });
+}, 
 
 
 
