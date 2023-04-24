@@ -1,5 +1,5 @@
 // const {sign}= require('jsonwebtoken');
-const {sendRequest, deleteAcceptedRequest,deletePendingRequest,getPendingRequest, getRequest,acceptFriendRequest,rejectFriendRequest} = require('./connection.service');
+const {sendRequest, deleteAcceptedRequest,deletePendingRequest,getPendingRequest, getRequest,acceptFriendRequest,rejectFriendRequest,getMyFriends} = require('./connection.service');
 
 module.exports = {
     sendFriendRequest:(req,res)=>{
@@ -59,6 +59,27 @@ module.exports = {
         getPendingRequest:(req,res)=>{
             const id = req.params.id;
             getPendingRequest(id,(err,results)=>{
+            console.log(results)
+           
+        
+                if(err){
+                    console.log(err);
+                    return res.status(500).json({
+                        success:0,
+                    message:'Record not found'
+                })
+                
+                }
+                
+                return res.status(200).json({
+                    success:1,
+                    data:results
+                }) 
+             })
+            },
+        getMyFriends:(req,res)=>{
+            const id = req.params.id;
+            getMyFriends(id,(err,results)=>{
             console.log(results)
            
         
