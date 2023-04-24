@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 module.exports={
     create:(data,callback)=>{
         pool.query(
-            'insert into tbl_users(user_id,username ,email,dob ,address ,passwrd,gender,phoneNumber   ) values(6,?,?,?,?,?,?,?)',
+            'insert into tbl_users(username ,email,dob ,address ,password,gender,phoneNumber   ) values(?,?,?,?,?,?,?)',
             [
                 data.username ,
                 data.email,
@@ -32,30 +32,72 @@ pool.query('Select * from tbl_users',[],(error,results,field)=>{
     return callback(null,results);
 })
     },
-    getUserById :(Id,callback)=>{
+  
+getUserById :(Id,callback)=>{
 
-let token = Id; // Your JWE-encrypted JWT token
-token = token.slice(7)
-const key = 'qwe124'; // Your JWE key
-let userId=''
-jwt.verify(token, key, (err, decodedToken) => {
-  if (err) {
-return callback(err)  
-} else {
-    console.log(decodedToken)
-    const userId = decodedToken.user_id; // Access the user ID from the decoded token
-    // Use the user ID as needed
-  }
-});
-        pool.query('select * from tbl_users where user_id=?',[userId],
-        (error,results,fields)=>{
-            if(error){
-              return  callback(error);
+// let token = Id; // Your JWE-encrypted JWT token
+// token = token.slice(7)
+// const key = 'qwe124'; // Your JWE key
+// let userId=''
+// jwt.verify(token, key, (err, decodedToken) => {
+//   if (err) {
+// return callback(err)  
+// } else {
+//     console.log(decodedToken)
+//     const userId = decodedToken.user_id; // Access the user ID from the decoded token
+//     // Use the user ID as needed
+//   }
+// });
+
+
+pool.query('Select * from tbl_users where user_id=?',[Id],(error,results,field)=>{
+    console.log(results,'heyyyy')
+    if(error){
+       return callback(error);
+    }
+    return callback(null,results);
+})
+},
+    // getUserByName :(username,callback)=>{
+
+    //     // let token = Id; // Your JWE-encrypted JWT token
+    //     // token = token.slice(7)
+    //     // const key = 'qwe124'; // Your JWE key
+    //     // let userId=''
+    //     // jwt.verify(token, key, (err, decodedToken) => {
+    //     // if (err) {
+    //     // return callback(err)  
+    //     // } else {
+    //     //     console.log(decodedToken)
+    //     //     const userId = decodedToken.user_id; // Access the user ID from the decoded token
+    //     //     // Use the user ID as needed
+    //     // }
+    //     // });
+
+    //     pool.query('SELECT * FROM tbl_users WHERE LOWER(username) LIKE LOWER(?)',
+    //     [`%${username}%`],
+    //     (error,results,fields)=>{
+    //         if(error){
+    //           return  callback(error);
+    //         }
+    //         return callback(null,results);
+    //     }
+    //     )
+    // },
+    getUserByName: (name, callback) => {
+
+        pool.query('SELECT * FROM tbl_users WHERE LOWER(username) LIKE LOWER(?)',
+            [`%${name}%`],
+            (error, results, fields) => {
+                if (error) {
+                    return callback(error);
+                }
+                return callback(null, results);
             }
-            return callback(null,results[0]);
-        }
         )
     },
+    
+
     getUserByUserEmail :(username,callback)=>{
         console.log(username)
         pool.query('select * from tbl_users where username =?',[username],

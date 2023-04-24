@@ -1,4 +1,4 @@
-const {create,getUserById,getUsers,getUserByUserEmail,updateUserById,updateUserProfileById} = require('./user.service');
+const {create,getUserById,getUsers,getUserByUserEmail,updateUserById,updateUserProfileById, getUserByName} = require('./user.service');
 const {genSaltSync,hashSync,compareSync }= require ('bcrypt')
 const {sign}= require('jsonwebtoken');
 
@@ -40,6 +40,26 @@ getUserById:(req,res)=>{
         })
     })
 },
+
+getUserByName:(req,res)=>{
+    const username = req.params.name;
+    console.log(username)
+    getUserByName(username,(err,results)=>{
+    console.log(results,'hereeeeeee')
+
+        if(err){
+            console.log(err);
+            return res.status(500).json({
+                success:0,
+            message:'Record not found'
+        })
+        }
+        return res.status(200).json({
+            success:1,
+            data:results
+        })
+    })
+},
 login:(req,res)=>{
     const body = req.body;
     console.log(body,'body')
@@ -57,10 +77,10 @@ login:(req,res)=>{
         })
            }
            console.log(body.password,'body.password')
-           console.log(',results.password',results.passwrd)
-           const result =compareSync (body.password,results.passwrd)
+           console.log(',results.password',results.password)
+           const result =compareSync (body.password,results.password)
            if(result){
-            results.passwrd=undefined;
+            results.password=undefined;
             const jsontoken = sign({result:results},'qwe124',{
                 expiresIn:'1h'
             })

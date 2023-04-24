@@ -98,6 +98,41 @@ getRequest: callback=>{
     return callback(null,results);
 })
     },
+getMyFriends:  callback => {
+  let token = Id; // Your JWE-encrypted JWT token
+  // token = token.slice(7)
+  const key = 'qwe124'; // Your JWE key
+  let userId = '';
+  jwt.verify(token, key, (err, decodedToken) => {
+    if (err) {
+      return callback(err);
+    } else {
+      console.log(decodedToken.result, 'decodedToken');
+      const res = decodedToken.result;
+      userId = res.user_id; // Access the user ID from the decoded token
+      // Use the user ID as needed
+    }
+  });
+  pool.query(
+    `
+    SELECT u.username, u.email
+    FROM tbl_users u JOIN tbl_connections c ON u.user_id = c.sender_id
+    WHERE c.status = 'accpeted' AND c.receiver_id = ?;
+  `,
+    [userId],
+    (error, results, fields) => {
+      console.log(results)
+      if (results.length === 0) {
+        return callback('No accpeted requests');
+      }
+    
+      if (error) {
+        return callback(error);
+      }
+      return callback(null, results);
+    }
+  );
+},
 
 
 getPendingRequest: (Id, callback) => {
