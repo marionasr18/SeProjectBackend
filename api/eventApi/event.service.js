@@ -151,12 +151,12 @@ return callback(err)
             // Use the user ID as needed
           }
         });
-        pool.query(`SELECT e.event_id, e.event_name, e.event_date, e.event_location, e.event_description, s.sport_name, f.field_name, u.username as created_by, e.event_description
+        pool.query(`SELECT e.event_id, e.event_name,e.start_time,e.end_time, e.event_date, e.event_location, e.event_description, s.sport_name, f.field_name, u.username as created_by, e.event_description
         FROM tbl_events e
         JOIN tbl_field f ON e.field_id = f.field_id
         JOIN tbl_sport s ON e.sport_id = s.sport_id
         JOIN tbl_users u ON e.user_id = u.user_id
-        WHERE e.event_date > NOW() AND e.user_id <> ?
+        WHERE  e.user_id <> ?
         ORDER BY e.event_date ASC;`, [userId, userId],
         (error,results,fields)=>{
             if(error){
