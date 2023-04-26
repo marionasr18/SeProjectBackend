@@ -78,7 +78,8 @@ module.exports = {
              })
             },
         getMyFriends:(req,res)=>{
-            const id = req.params.id;
+            const id =  req.get('authorization');
+            console.log(id,'iiddd')
             getMyFriends(id,(err,results)=>{
             console.log(results)
            

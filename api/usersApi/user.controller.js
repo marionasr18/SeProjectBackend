@@ -22,10 +22,9 @@ createUser:(req,res)=>{
     })
 },
 getUserById:(req,res)=>{
-    const id = req.params.id;
+    const id = req.get('authorization');
     console.log(id)
     getUserById(id,(err,results)=>{
-    console.log(results,'hereeeeeee')
 
         if(err){
             console.log(err);
@@ -77,8 +76,8 @@ login:(req,res)=>{
         })
            }
            console.log(body.password,'body.password')
-           console.log(',results.password',results.password)
-           const result =compareSync (body.password,results.password)
+           console.log(',results.password',results.passwrd)
+           const result =compareSync (body.password,results.passwrd)
            if(result){
             results.password=undefined;
             const jsontoken = sign({result:results},'qwe124',{

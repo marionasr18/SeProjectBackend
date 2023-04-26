@@ -35,23 +35,22 @@ pool.query('Select * from tbl_users',[],(error,results,field)=>{
   
 getUserById :(Id,callback)=>{
 
-// let token = Id; // Your JWE-encrypted JWT token
-// token = token.slice(7)
-// const key = 'qwe124'; // Your JWE key
-// let userId=''
-// jwt.verify(token, key, (err, decodedToken) => {
-//   if (err) {
-// return callback(err)  
-// } else {
-//     console.log(decodedToken)
-//     const userId = decodedToken.user_id; // Access the user ID from the decoded token
-//     // Use the user ID as needed
-//   }
-// });
+ let token = Id; // Your JWE-encrypted JWT token
+ token = token.slice(7)
+ const key = 'qwe124'; // Your JWE key
+ let userId=''
+ jwt.verify(token, key, (err, decodedToken) => {
+   if (err) {
+ return callback(err)  
+ } else {
+     console.log(decodedToken)
+      userId = decodedToken.result.user_id; // Access the user ID from the decoded token
+     // Use the user ID as needed
+  }
+});
 
 
-pool.query('Select * from tbl_users where user_id=?',[Id],(error,results,field)=>{
-    console.log(results,'heyyyy')
+pool.query('Select * from tbl_users where user_id=?',[userId],(error,results,field)=>{
     if(error){
        return callback(error);
     }

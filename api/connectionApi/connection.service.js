@@ -4,10 +4,24 @@ const jwt = require('jsonwebtoken');
 module.exports={
   
    sendRequest:(data,callback)=>{
+    let token =data.sender_id; // Your JWE-encrypted JWT token
+    // token = token.slice(7)
+    const key = 'qwe124'; // Your JWE key
+    let userId=''
+    jwt.verify(token, key, (err, decodedToken) => {
+      if (err) {
+    return callback(err)  
+    } else {
+        console.log(decodedToken.result,'dedecodedToken')
+        const res =  decodedToken.result
+         userId =res.user_id; // Access the user ID from the decoded token
+        // Use the user ID as needed
+      }
+    });
         pool.query(
             'INSERT INTO tbl_connections (sender_id, receiver_id) VALUES (?, ?)',
             [
-                data.sender_id ,
+                userId,
                 data.receiver_id
             ],
             (error,results,fields)=>{
@@ -98,9 +112,9 @@ getRequest: callback=>{
     return callback(null,results);
 })
     },
-getMyFriends:  callback => {
+getMyFriends: (Id, callback) => {
   let token = Id; // Your JWE-encrypted JWT token
-  // token = token.slice(7)
+  token = token.slice(7)
   const key = 'qwe124'; // Your JWE key
   let userId = '';
   jwt.verify(token, key, (err, decodedToken) => {
