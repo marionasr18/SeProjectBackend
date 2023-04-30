@@ -1,4 +1,4 @@
-const {create,getEventToJoinnById,deleteEventById,requestToJoin,acceptOrDeclineRequest,getAllCreatedEvents,getRequestByEventId} = require('./event.service');
+const {create,getEventToJoinnById,deleteEventById,requestToJoin,acceptOrDeclineRequest,viewRequestStatus,getAllCreatedEvents,getRequestByEventId} = require('./event.service');
 // const {sign}= require('jsonwebtoken');
 
 module.exports={
@@ -59,6 +59,24 @@ acceptOrDeclineRequest:(req,res)=>{
 getEventToJoinnById:(req,res)=>{
     const id = req.params.id;
     getEventToJoinnById(id,(err,results)=>{
+    console.log(results)
+
+        if(err){
+            console.log(err);
+            return res.status(500).json({
+                success:0,
+            message:'Record not found'
+        })
+        }
+        return res.status(200).json({
+            success:1,
+            data:results
+        })
+    })
+},
+viewRequestStatus:(req,res)=>{
+    const id = req.params.id;
+    viewRequestStatus(id,(err,results)=>{
     console.log(results)
 
         if(err){

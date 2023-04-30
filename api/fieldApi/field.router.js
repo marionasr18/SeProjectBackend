@@ -4,11 +4,11 @@ const {checkToken} =require('../../auth/token_validation');
 
 
 
-router.post('/createField',checkToken,createField)
-router.get('/getAllFields',checkToken,getField)
-router.get('/FieldId/:id', checkToken, getFieldById);
-router.get('/FieldName/:name', checkToken, getFieldByName);
-router.delete('/deleteField/:id',checkToken,deleteFieldById);
+router.post('/createField',createField)
+router.get('/getAllFields',getField)
+router.get('/FieldId/:id', getFieldById);
+router.get('/FieldName/:name', getFieldByName);
+router.delete('/deleteField/:id',deleteFieldById);
 
 module.exports = router;
 
