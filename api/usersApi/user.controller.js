@@ -76,10 +76,10 @@ login:(req,res)=>{
         })
            }
            console.log(body.password,'body.password')
-           console.log(',results.password',results.passwrd)
-           const result =compareSync (body.password,results.passwrd)
+           console.log(',results.password',results.password)
+           const result =compareSync (body.password,results.password)
            if(result){
-            results.passwrd=undefined;
+            results.password=undefined;
             const jsontoken = sign({result:results},'qwe124',{
                 expiresIn:'1h'
             })
