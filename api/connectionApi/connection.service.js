@@ -129,14 +129,15 @@ getMyFriends: (Id, callback) => {
   });
   pool.query(
     `
-    SELECT u.username, u.email
-    FROM tbl_users u JOIN tbl_connections c ON u.user_id = c.sender_id
-    WHERE c.status = 'accpeted' AND c.receiver_id = ?;
+    SELECT *
+    FROM tbl_users u 
+    JOIN tbl_connections c ON u.user_id = c.sender_id
+    WHERE c.status = 'accepted' AND (c.sender_id = ? OR c.receiver_id = ?)    
   `,
-    [userId],
+    [userId,userId],
     (error, results, fields) => {
-      console.log(results)
-      if (results.length === 0) {
+      console.log(results,'results')
+      if (results?.length === 0) {
         return callback('No accpeted requests');
       }
     
@@ -166,7 +167,7 @@ getPendingRequest: (Id, callback) => {
   });
   pool.query(
     `
-    SELECT u.username, u.email, u.profile_picture
+    SELECT u.username, u.email, u.profile_picture, c.connection_id
     FROM tbl_users u JOIN tbl_connections c ON u.user_id = c.sender_id
     WHERE c.status = 'pending' AND c.receiver_id = ?;
   `,
@@ -197,9 +198,9 @@ acceptFriendRequest: (connectionId, callback) => {
 
     const status = results[0].status;
 
-    if (status !== 'accepted') {
-      return callback(`Cannot delete connection with status "${status}"`);
-    }
+    // if (status !== 'accepted') {
+    //   return callback(`Cannot delete connection with status "${status}"`);
+    // }
   pool.query(
     'UPDATE tbl_connections SET status = "accepted" WHERE connection_id = ? AND status = "pending"',
 
