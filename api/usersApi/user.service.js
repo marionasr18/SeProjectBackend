@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 module.exports={
     create:(data,callback)=>{
         pool.query(
-            'insert into tbl_users(username ,email,dob ,address ,password,gender,phoneNumber   ) values(?,?,?,?,?,?,?)',
+            'insert into tbl_users(username,email,dob ,address ,password,gender,phoneNumber   ) values(?,?,?,?,?,?,?)',
             [
                 data.username ,
                 data.email,
@@ -44,7 +44,7 @@ getUserById :(Id,callback)=>{
  return callback(err)  
  } else {
      console.log(decodedToken)
-      userId = decodedToken.result.user_id; // Access the user ID from the decoded token
+     userId = decodedToken.result.user_id; // Access the user ID from the decoded token
      // Use the user ID as needed
   }
 });
