@@ -150,27 +150,27 @@ getMyFriends: (Id, callback) => {
 
 
 getPendingRequest: (Id, callback) => {
-  // let token = Id; // Your JWE-encrypted JWT token
-  // // token = token.slice(7)
-  // const key = 'qwe124'; // Your JWE key
-  // let userId = '';
-  // jwt.verify(token, key, (err, decodedToken) => {
-  //   if (err) {
-  //     return callback(err);
-  //   } else {
-  //     console.log(decodedToken.result, 'decodedToken');
-  //     const res = decodedToken.result;
-  //     userId = res.user_id; // Access the user ID from the decoded token
-  //     // Use the user ID as needed
-  //   }
-  // });
+  let token = Id; // Your JWE-encrypted JWT token
+  // token = token.slice(7)
+  const key = 'qwe124'; // Your JWE key
+  let userId = '';
+  jwt.verify(token, key, (err, decodedToken) => {
+    if (err) {
+      return callback(err);
+    } else {
+      console.log(decodedToken.result, 'decodedToken');
+      const res = decodedToken.result;
+      userId = res.user_id; // Access the user ID from the decoded token
+      // Use the user ID as needed
+    }
+  });
   pool.query(
     `
-    SELECT u.username, u.email
+    SELECT u.username, u.email, u.profile_picture
     FROM tbl_users u JOIN tbl_connections c ON u.user_id = c.sender_id
     WHERE c.status = 'pending' AND c.receiver_id = ?;
   `,
-    [Id],
+    [userId],
     (error, results, fields) => {
       console.log(results)
       if (results.length === 0) {
