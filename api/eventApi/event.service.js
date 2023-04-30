@@ -70,23 +70,10 @@ return callback(err)
         )
     },
     acceptOrDeclineRequest:(data,callback)=>{
-        let token = data.user_id; // Your JWE-encrypted JWT token
-// token = token.slice(7)
-const key = 'qwe124'; // Your JWE key
-let userId=''
-jwt.verify(token, key, (err, decodedToken) => {
-  if (err) {
-return callback(err)  
-} else {
-    console.log(decodedToken.result,'dedecodedToken')
-    const res =  decodedToken.result
-     userId =res.user_id; // Access the user ID from the decoded token
-    // Use the user ID as needed
-  }
-});
+       
         pool.query(
             'UPDATE tbl_event_participants SET status = ? WHERE event_id = ? AND user_id = ?',
-  [data.status, data.eventId, userId],
+  [data.status, data.eventId, data.userId],
             (error,results,fields)=>{
                 if(error){
                     callback(error)
@@ -124,7 +111,7 @@ return callback(err)
     getRequestByEventId:(Id,callback)=>{
     
         pool.query(
-            'SELECT u.username, u.email, u.dob, u.address, u.gender, u.phoneNumber, ep.status FROM tbl_event_participants ep JOIN tbl_users u ON ep.user_id = u.user_id WHERE ep.event_id =?;',
+            'SELECT u.user_id, u.username, u.email, u.dob, u.address, u.gender, u.phoneNumber, ep.status FROM tbl_event_participants ep JOIN tbl_users u ON ep.user_id = u.user_id WHERE ep.event_id =?;',
   [Id],
             (error,results,fields)=>{
                 if(error){
@@ -151,12 +138,18 @@ return callback(err)
             // Use the user ID as needed
           }
         });
-        pool.query(`SELECT e.event_id, e.event_name,e.start_time,e.end_time, e.event_date, e.event_location, e.event_description, s.sport_name, f.field_name, u.username as created_by, e.event_description
+        pool.query(`SELECT e.event_id, e.event_name, e.start_time, e.end_time, e.event_date, e.event_location, e.event_description, s.sport_name, f.field_name, u.username as created_by
         FROM tbl_events e
         JOIN tbl_field f ON e.field_id = f.field_id
         JOIN tbl_sport s ON e.sport_id = s.sport_id
         JOIN tbl_users u ON e.user_id = u.user_id
-        WHERE  e.user_id <> ?
+        WHERE e.user_id <> ?
+        AND e.event_id NOT IN (
+            SELECT event_id
+            FROM tbl_event_participants
+            WHERE user_id = ?
+        )
+       
         ORDER BY e.event_date ASC;`, [userId, userId],
         (error,results,fields)=>{
             if(error){
@@ -166,18 +159,38 @@ return callback(err)
         }
         )
     },
-    // getSportByName :(Name,callback)=>{
-      
-    //     pool.query('select * from tbl_sport where sport_name =?',[Name],
-    //     (error,results,fields)=>{
-    //         console.log(results)
-    //         if(error){
-    //           return  callback(error);
-    //         }
-    //         return callback(null,results[0]);
-    //     }
-    //     )
-    // },
+    viewRequestStatus :(Id,callback)=>{
+        let token =Id; // Your JWE-encrypted JWT token
+        // token = token.slice(7)
+        const key = 'qwe124'; // Your JWE key
+        let userId=''
+        jwt.verify(token, key, (err, decodedToken) => {
+          if (err) {
+        return callback(err)  
+        } else {
+            console.log(decodedToken.result,'dedecodedToken')
+            const res =  decodedToken.result
+             userId =res.user_id; // Access the user ID from the decoded token
+            // Use the user ID as needed
+          }
+        });
+        pool.query(`SELECT e.event_id, e.event_name, e.event_date, e.event_location, e.event_description, 
+        s.sport_name, f.field_name, ep.status
+ FROM tbl_events e
+ JOIN tbl_field f ON e.field_id = f.field_id
+ JOIN tbl_sport s ON e.sport_id = s.sport_id
+ JOIN tbl_event_participants ep ON e.event_id = ep.event_id
+ WHERE ep.user_id = ? AND ep.user_id <> e.user_id
+ ORDER BY e.event_date ASC;`, [userId],
+        (error,results,fields)=>{
+            if(error){
+              return  callback(error);
+            }
+            return callback(null,results);
+        }
+        )
+    },
+   
     deleteEventById :(Id,callback)=>{
         pool.query('DELETE FROM tbl_sport WHERE sport_id=?',[Id],
         (error,results,fields)=>{

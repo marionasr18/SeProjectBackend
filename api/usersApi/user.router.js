@@ -9,7 +9,7 @@ router.get('/getUser/:name',checkToken,getUserByName)
 router.post('/login',login)
 router.delete('/deleteUser/:id', deleteUserById);
 router.put('/updateUser/:id', checkToken,updateUserById);
-router.put('/updateUserProfile/:id', checkToken,updateUserProfileById); //needs testing
+router.post('/updateUserProfile', checkToken,updateUserProfileById); //needs testing
 
 
 module.exports = router;

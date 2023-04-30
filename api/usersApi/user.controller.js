@@ -148,10 +148,9 @@ updateUserById: (req, res) => {
     });
 }, 
 updateUserProfileById:(req, res) => {
-    const id = req.params.id;
-    const { picture } = req.body;
+    const body = req.body;
 
-    updateUserById(id, picture, (err, results) => {
+    updateUserProfileById(body, (err, results) => {
         if (err) {
             console.log(err);
             return res.status(500).json({

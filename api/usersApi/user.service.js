@@ -13,7 +13,8 @@ module.exports={
                 data.address ,
                 data.password,
                 data.gender ,
-                data.phoneNumber
+                data.phoneNumber,
+                data.profile_picture
             ],
             (error,results,fields)=>{
                 if(error){
@@ -146,8 +147,8 @@ pool.query('Select * from tbl_users where user_id=?',[userId],(error,results,fie
             // Use the user ID as needed
           }
         pool.query(
-            'UPDATE tbl_users SET profile_picture = ? WHERE user_id = ?',
-            [data.profile_picture, userId],
+            'UPDATE tbl_users SET email = ?, profile_picture = ? WHERE user_id = ?',
+            [data.email,data.profile_picture, userId],
             (error, results, fields) => {
                 if (error) {
                     return callback(error);
