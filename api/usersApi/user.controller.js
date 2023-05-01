@@ -79,8 +79,8 @@ login:(req,res)=>{
         })
            }
            console.log(body.password,'body.password')
-           console.log(',results.password',results.password)
-           const result =compareSync (body.password,results.password)
+           console.log(',results.password',results.passwrd)
+           const result =compareSync (body.password,results.passwrd)
            if(result){
             results.password=undefined;
             const jsontoken = sign({result:results},'qwe124',{
