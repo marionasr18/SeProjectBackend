@@ -41,9 +41,12 @@ getUserById:(req,res)=>{
 },
 
 getUserByName:(req,res)=>{
+    const id =  req.get('authorization');
     const username = req.params.name;
-    console.log(username)
-    getUserByName(username,(err,results)=>{
+    let data = {id:id,
+    name:username}
+    console.log(data)
+    getUserByName(data,(err,results)=>{
     console.log(results,'hereeeeeee')
 
         if(err){
