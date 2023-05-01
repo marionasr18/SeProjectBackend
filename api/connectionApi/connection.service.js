@@ -132,7 +132,7 @@ getMyFriends: (Id, callback) => {
     SELECT *
     FROM tbl_users u 
     JOIN tbl_connections c ON u.user_id = c.sender_id
-    WHERE c.status = 'accepted' AND (c.sender_id = ? OR c.receiver_id = ?)    
+    WHERE c.status = 'accepted' AND (c.receiver_id = ?)    
   `,
     [userId,userId],
     (error, results, fields) => {
