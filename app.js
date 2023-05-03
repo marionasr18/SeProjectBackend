@@ -10,6 +10,8 @@ const fieldRouter  = require('./api/fieldApi/field.router');
 const eventRouter  = require('./api/eventApi/event.router');
 const connectionRouter  = require('./api/connectionApi/connection.router');
 
+const nodemailer = require('nodemailer');
+
 const app = express();
 app.use(express.json());
 app.use(cors())
@@ -41,4 +43,41 @@ app.post("/createChatUser", async (req, res) => {
 app.listen(3001,()=>{
     console.log('Server up and running')
 });
+
+app.post('/api/sendMail',(req,res)=>{
+  const {recipient,subject,body} = req.body;
+  if (!recipient ){
+    return res.status(400).text('Invalid recipient');
+
+  }
+
+  var transporter = nodemailer.createTransport({
+    host: 'mail.codefolio.site',
+    port: 465,
+    secure: true, // true for 465, false for other ports
+    auth: {
+      user: 'sportsbuddy@codefolio.site', // your domain email address
+      pass: 'Dotnetserver_1' // your password
+    }
+  });
+  
+  var mailOptions = {
+    from: 'sportsbuddy@codefolio.site',
+    to: recipient,
+    subject: subject,
+    text: body
+  };
+
+  transporter.sendMail(mailOptions, function (err, info) {
+    if (err) {
+      return res.status(400).text(err);
+    }
+    else {
+      console.log("Email sent");
+      res.status(200).text('OK')
+    }
+  });
+
+});
+
 
