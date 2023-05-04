@@ -1,4 +1,4 @@
-const {create,getUserById,getUsers,getUserByUserEmail,updateUserById,updateUserProfileById, getUserByName} = require('./user.service');
+const {create,getUserById,getUsers,getUserByUserEmail,updateUserById,updateUserProfileById, getUserByName, getUserByUsername} = require('./user.service');
 const {genSaltSync,hashSync,compareSync }= require ('bcrypt')
 const {sign}= require('jsonwebtoken');
 
@@ -25,6 +25,24 @@ getUserById:(req,res)=>{
     const id = req.get('authorization');
     console.log(id)
     getUserById(id,(err,results)=>{
+
+        if(err){
+            console.log(err);
+            return res.status(500).json({
+                success:0,
+            message:'Record not found'
+        })
+        }
+        return res.status(200).json({
+            success:1,
+            data:results
+        })
+    })
+},
+getUserByUsername:(req,res)=>{
+    const {name} = req.params;
+    console.log(name)
+    getUserByUsername(name,(err,results)=>{
 
         if(err){
             console.log(err);

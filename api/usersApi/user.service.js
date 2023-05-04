@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 module.exports={
     create:(data,callback)=>{
         pool.query(
-            'insert into tbl_users(username,email,dob ,address ,passwrd,gender,phoneNumber   ) values(?,?,?,?,?,?,?)',
+            'insert into tbl_users(user_id,username,email,dob ,address ,passwrd,gender,phoneNumber,profile_picture ) values(8,?,?,?,?,?,?,?,?)',
             [
                 data.username ,
                 data.email,
@@ -52,6 +52,15 @@ getUserById :(Id,callback)=>{
 
 
 pool.query('Select * from tbl_users where user_id=?',[userId],(error,results,field)=>{
+    if(error){
+       return callback(error);
+    }
+    return callback(null,results);
+})
+},
+getUserByUsername :(name,callback)=>{
+
+pool.query('Select * from tbl_users where username=?',[name],(error,results,field)=>{
     if(error){
        return callback(error);
     }
