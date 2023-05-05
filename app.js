@@ -26,7 +26,7 @@ app.post("/createChatUser", async (req, res) => {
     try{
       const r = await axios.put(
         "https://api.chatengine.io/users/",
-        {username: username, secret: "pass" + username, first_name: username, email: username + "@hotmail.com"},
+        {username: username, secret: username + username, first_name: username, email: username + "@hotmail.com"},
         { headers: { "private-key" : "585ec951-ef05-440d-a18f-08b2922b63d9"} }
       )
       return res.status(r.status).json(r.data);
