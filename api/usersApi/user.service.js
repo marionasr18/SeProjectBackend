@@ -223,7 +223,7 @@ pool.query('Select * from tbl_users where username=?',[name],(error,results,fiel
     // })}
     updateUserProfileById: (data, callback) => {
         let token = data.user_id; // Your JWE-encrypted JWT token
-        token = token.slice(7)
+        // token = token.slice(7)
         const key = 'qwe124'; // Your JWE key
         let userId = '';
       
@@ -237,8 +237,8 @@ pool.query('Select * from tbl_users where username=?',[name],(error,results,fiel
             // Use the user ID as needed
       
             pool.query(
-              'UPDATE tbl_users SET email = ?,gender=?,phoneNumber=?,address=?, profile_picture = ? WHERE user_id = ?',
-              [data.email, data.gender, data.phoneNumber, data.address, data.profile_picture, userId],
+              'UPDATE tbl_users SET email = ?,gender=?,phoneNumber=?,address=?,dob=?, profile_picture = ? WHERE user_id = ?',
+              [data.email, data.gender, data.phoneNumber, data.address,data.dob, data.profile_picture, userId],
               (error, results, fields) => {
                 if (error) {
                   return callback(error);
