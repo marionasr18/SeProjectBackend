@@ -111,7 +111,7 @@ return callback(err)
     getRequestByEventId:(Id,callback)=>{
     
         pool.query(
-            'SELECT u.user_id, u.username, u.email, u.dob, u.address, u.gender, u.phoneNumber, ep.status FROM tbl_event_participants ep JOIN tbl_users u ON ep.user_id = u.user_id WHERE ep.event_id =?;',
+            'SELECT u.user_id, u.username, u.email,u.profile_picture, u.dob, u.address, u.gender, u.phoneNumber, ep.status FROM tbl_event_participants ep JOIN tbl_users u ON ep.user_id = u.user_id WHERE ep.event_id =?;',
   [Id],
             (error,results,fields)=>{
                 if(error){
