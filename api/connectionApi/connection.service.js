@@ -173,7 +173,7 @@ getPendingRequest: (Id, callback) => {
   `,
     [userId],
     (error, results, fields) => {
-      console.log(results)
+      console.log(results,'results')
       if (results.length === 0) {
         return callback('No pending requests');
       }

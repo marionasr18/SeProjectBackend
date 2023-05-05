@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 module.exports={
     create:(data,callback)=>{
         pool.query(
-            'insert into tbl_users(user_id,username,email,dob ,address ,passwrd,gender,phoneNumber,profile_picture ) values(10,?,?,?,?,?,?,?,?)',
+            'insert into tbl_users(username,email,dob ,address ,passwrd,gender,phoneNumber,profile_picture ) values(?,?,?,?,?,?,?,?)',
             [
                 data.username ,
                 data.email,
@@ -57,7 +57,11 @@ pool.query('Select * from tbl_users where user_id=?',[userId],(error,results,fie
     }
     return callback(null,results);
 })
+
 },
+
+
+
 getUserByUsername :(name,callback)=>{
 
 pool.query('Select * from tbl_users where username=?',[name],(error,results,field)=>{
@@ -187,32 +191,66 @@ pool.query('Select * from tbl_users where username=?',[name],(error,results,fiel
             }
         );
     },
+    // updateUserProfileById: (data, callback) => {
+    //     let token = data.user_id; // Your JWE-encrypted JWT token
+    //     token = token.slice(7)
+    //     const key = 'qwe124'; // Your JWE key
+    //     let userId=''
+    //     jwt.verify(token, key, (err, decodedToken) => {
+    //       if (err) {
+    //           return callback(err) 
+        
+    //     } else {
+    //         console.log(decodedToken.result,'dedecodedToken')
+    //         const res =  decodedToken.result
+    //          userId =res.user_id; // Access the user ID from the decoded token
+    //         // Use the user ID as needed
+    //       }
+
+       
+         
+    //     pool.query(
+    //         'UPDATE tbl_users SET email = ?,gender=?,phoneNumber=?,address=?, profile_picture = ? WHERE user_id = ?',
+    //         [data.email,data.gender,data.phoneNumber,data.address,data.profile_picture, userId],
+    //         (error, results, fields) => {
+    //             if (error) {
+    //                 return callback(error);
+    //             }
+    //             console.log(id);
+    //             return callback(null, results);
+    //         }
+    //     );
+    // })}
     updateUserProfileById: (data, callback) => {
         let token = data.user_id; // Your JWE-encrypted JWT token
-        // token = token.slice(7)
+        token = token.slice(7)
         const key = 'qwe124'; // Your JWE key
-        let userId=''
+        let userId = '';
+      
         jwt.verify(token, key, (err, decodedToken) => {
           if (err) {
-        return callback(err)  
-        } else {
-            console.log(decodedToken.result,'dedecodedToken')
-            const res =  decodedToken.result
-             userId =res.user_id; // Access the user ID from the decoded token
+            return callback(err);
+          } else {
+            console.log(decodedToken.result, 'decodedToken');
+            const res = decodedToken.result;
+            userId = res.user_id; // Access the user ID from the decoded token
             // Use the user ID as needed
-          }
-        pool.query(
-            'UPDATE tbl_users SET email = ?,gender=?,phoneNumber=?, profile_picture = ? WHERE user_id = ?',
-            [data.email,data.gender,data.phoneNumber,data.profile_picture, userId],
-            (error, results, fields) => {
+      
+            pool.query(
+              'UPDATE tbl_users SET email = ?,gender=?,phoneNumber=?,address=?, profile_picture = ? WHERE user_id = ?',
+              [data.email, data.gender, data.phoneNumber, data.address, data.profile_picture, userId],
+              (error, results, fields) => {
                 if (error) {
-                    return callback(error);
+                  return callback(error);
                 }
-                console.log(id);
+                console.log(userId);
                 return callback(null, results);
-            }
-        );
-    })}
+              }
+            );
+          }
+        });
+      }
+      
     
     
 }

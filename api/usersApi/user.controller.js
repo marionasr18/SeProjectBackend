@@ -101,6 +101,7 @@ login:(req,res)=>{
            const result =compareSync (body.password,results.passwrd)
            if(result){
             results.password=undefined;
+            results.profile_picture=undefined;
             const jsontoken = sign({result:results},'qwe124',{
                 expiresIn:'1h'
             })
