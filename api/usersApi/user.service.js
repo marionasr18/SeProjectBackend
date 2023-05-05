@@ -114,7 +114,7 @@ pool.query('Select * from tbl_users where username=?',[name],(error,results,fiel
           }
         });
         pool.query(
-            `SELECT u.*,
+            `SELECT u.*,c.connection_id,
         CASE 
             WHEN c.status = 'pending' THEN 'pending'
             WHEN c.status = 'accepted' THEN 'connected'
